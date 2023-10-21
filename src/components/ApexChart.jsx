@@ -31,7 +31,7 @@ const ApexChart = ({ data }) => {
       },
     },
     fill: {
-      opacity: 2,
+      opacity: 3,
     },
     tooltip: {
       y: {
