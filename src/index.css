@@ -14,3 +14,20 @@
     background-size: 200% 200%;
     animation: gradient-x 10s ease infinite;
 }
+/* Genel scrollbar stilini özelleştirme */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Yatay scrollbar özelleştirmesi */
+::-webkit-scrollbar-track {
+    background: #2D3748;  /* scrollbar track rengi */
+    border-radius: 10px;
+}
+
+/* Dikey scrollbar özelleştirmesi */
+::-webkit-scrollbar-thumb {
+    background: #6366F1;  /* scrollbar rengi */
+    border-radius: 10px;
+}
+
