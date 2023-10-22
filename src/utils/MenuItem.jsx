@@ -25,6 +25,11 @@ export const menuItem = [
           name: 'All Question',
           slug: 'dashboard/allQuestion',
           description: 'question create',
+        },
+        {
+          name: "My Questions",
+          slug: "dashboard/myQuestions",
+          description: "my questions"
         }
       ]
     },

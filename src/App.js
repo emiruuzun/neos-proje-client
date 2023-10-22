@@ -3,6 +3,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { getCookie } from './utils/cookie-manager';
 import { decodeToken } from './utils/decoded-token';
 import PropTypes from "prop-types";
+
+
 // User Pages
 import Anasayfa from './pages/Anasayfa';
 import KayıtOl from './pages/Register/index';
@@ -11,6 +13,9 @@ import Dashboard from './pages/Dashboard/index'
 import ProfilePage from './pages/Dashboard/Profile/index';
 import QuestionAddPage from './pages/Dashboard/Question/AddQuestion/index';
 import AllQuestionPage from './pages/Dashboard/Question/AllQuestion/index';
+import MyQuestion from './pages/Dashboard/Question/MyQuestion/index';
+
+
 // Admin Pages
 import AdminAnasayfa from './pages/admin/anasayfa'
 import AdminProfilePage from './pages/admin/profile';
@@ -98,6 +103,7 @@ function App() {
         <Route path='/dashboard/profile' element={<PrivateRoute><ProfilePage></ProfilePage></PrivateRoute>} />
         <Route path='/dashboard/question-add' element={<PrivateRoute><QuestionAddPage></QuestionAddPage></PrivateRoute>} />
         <Route path='/dashboard/AllQuestion' element={<PrivateRoute><AllQuestionPage></AllQuestionPage></PrivateRoute>} />
+        <Route path='/dashboard/myQuestions' element={<PrivateRoute><MyQuestion></MyQuestion></PrivateRoute>} />
 
 
         {/* Admin Route */}
