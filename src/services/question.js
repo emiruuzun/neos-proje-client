@@ -71,26 +71,43 @@ export const myQuestion = async () => {
   }
 };
 
-
-export const deleteQuestion = async(id)=>{
-
+export const deleteQuestion = async (id) => {
   try {
-    const apiRequest = await fetch(`http://localhost:8000/v1/api/questions/${id}/delete`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer: ${getCookie("access_token")}`,
-      },
-      credentials: "include",
-    });
+    const apiRequest = await fetch(
+      `http://localhost:8000/v1/api/questions/${id}/delete`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer: ${getCookie("access_token")}`,
+        },
+        credentials: "include",
+      }
+    );
 
     const data = apiRequest.json();
-    if(data.success){
+    if (data.success) {
       toast.success("Success delete Question", { autoClose: 2000 });
     }
     return data;
   } catch (error) {
     console.log(Error);
   }
+};
 
-    
+export const likeQuestion = async (id) => {
+  try {
+
+    const apiRequest = await fetch(`http://localhost:8000/v1/api/questions/${id}/like`,{
+      method: "GET",
+      headers:{
+        Authorization: `Bearer: ${getCookie("access_token")}`,
+      }
+    });
+    const data = apiRequest.json();
+    console.log(data)
+    return data;
+
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../../../layout/DashboardLayout";
-import { allQuestion } from "../../../../services/question";
+import { allQuestion, likeQuestion } from "../../../../services/question";
 import { addAnswers } from "../../../../services/answers";
 import {
   FaRegUser,
@@ -15,6 +15,7 @@ function AllQuestionPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeCommentBox, setActiveCommentBox] = useState(null);
   const [comment, setComment] = useState("");
+  const [likedQuestions, setLikedQuestions] = useState([]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -63,6 +64,19 @@ function AllQuestionPage() {
     }
   };
 
+  const handleLike = async (questionId) => {
+    if (likedQuestions.includes(questionId)) {
+      return;
+    }
+
+    try {
+      await likeQuestion(questionId);
+      setLikedQuestions((prevLiked) => [...prevLiked, questionId]);
+    } catch (error) {
+      console.error("Beğenme işlemi başarısız:", error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="bg-gray-800 p-6 rounded-lg">
@@ -91,10 +105,21 @@ function AllQuestionPage() {
                   Ekleyen: {question.user.email}
                 </span>
                 <div className="flex items-center space-x-6 mb-4">
-                  <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition">
+                  <button
+                    className={`flex items-center space-x-2 text-gray-500 ${
+                      likedQuestions.includes(question._id)
+                        ? "text-blue-600"
+                        : "hover:text-blue-600"
+                    } transition`}
+                    onClick={() => handleLike(question._id)}
+                  >
                     <FaThumbsUp />
                     <span>Beğen</span>
+                    <span className="ml-2 text-sm text-gray-400">
+                      {question.likes.length}
+                    </span>
                   </button>
+
                   <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition">
                     <FaThumbsDown />
                     <span>Beğenme</span>

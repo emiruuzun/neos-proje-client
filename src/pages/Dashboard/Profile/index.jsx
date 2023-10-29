@@ -2,9 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../../layout/DashboardLayout';
-import web1Image from '../../../assets/web1.jpeg';
-import web2Image from '../../../assets/web2.jpeg';
-import web3Image from '../../../assets/web3.png';
 import { profile, deleteUser, uploadProfileImage } from '../../../services/profile';
 import { getProfileImageUrl } from '../../../utils/profileImgUrl';
 import { formatDate } from '../../../utils/form-date';
@@ -202,30 +199,6 @@ const ProfilePage = () => {
             )}
           </Dialog.Root>
         </div>
-      </div>
-
-      <div className="flex justify-center space-x-4 mt-5">
-        {response?.data?.layer >= 2 && (
-        <img
-          className="w-36 h-24 object-cover"
-          src={web1Image}
-          alt="Web 1 Achievement"
-        />
-      )}
-      {response?.data?.layer >= 3 && (
-        <img
-          className="w-36 h-24 object-cover"
-          src={web2Image}
-          alt="Web 2 Achievement"
-        />
-      )}
-       {response?.data?.layer >= 4 && (
-        <img
-          className="w-36 h-24 object-cover"
-          src={web3Image}
-          alt="Web 2 Achievement"
-        />
-      )}
       </div>
     </DashboardLayout>
   );

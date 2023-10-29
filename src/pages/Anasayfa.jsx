@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaGamepad, FaPen, FaStar } from 'react-icons/fa';
+import cyp1 from "../assets/cyp1.png"
 
 function Anasayfa() {
   const navigate = useNavigate();
@@ -10,7 +11,10 @@ function Anasayfa() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-400 via-indigo-600 to-purple-700 animate-gradient-x transition-all duration-3000 ease-in-out">
+    <div 
+      className="flex flex-col items-center justify-center h-screen bg-cover bg-center transition-all duration-3000 ease-in-out"
+      style={{ backgroundImage: `url(${cyp1})` }}
+    >
       <h1 className="text-6xl font-bold text-center mb-8 text-white">
         Oyun Bilgileri
       </h1>
