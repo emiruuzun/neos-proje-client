@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from "../../../../layout/DashboardLayout";
-import { deleteQuestion as deleteQuestionAPI, myQuestion } from '../../../../services/question';
+import { deleteQuestion , myQuestion } from '../../../../services/question';
 import { FaRegQuestionCircle, FaTrash } from "react-icons/fa";
 
 function MyQuestion() {
@@ -30,7 +30,7 @@ function MyQuestion() {
 
   const handleDeleteQuestion = async (id) => {
     try {
-      const response = await deleteQuestionAPI(id);
+      const response = await deleteQuestion(id);
       if(response && response.success) {
         const updatedQuestions = questions.filter(question => question._id !== id);
         setQuestions(updatedQuestions);
