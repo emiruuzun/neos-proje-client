@@ -30,7 +30,13 @@ export const menuItem = [
           name: "My Questions",
           slug: "dashboard/myQuestions",
           description: "my questions"
+        },
+        {
+          name: "My Answers",
+          slug: "dashboard/myAnswers",
+          description: "my Answer"
         }
+        
       ]
     },
     {

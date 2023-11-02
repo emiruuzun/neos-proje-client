@@ -14,12 +14,14 @@ import ProfilePage from './pages/Dashboard/Profile/index';
 import QuestionAddPage from './pages/Dashboard/Question/AddQuestion/index';
 import AllQuestionPage from './pages/Dashboard/Question/AllQuestion/index';
 import MyQuestion from './pages/Dashboard/Question/MyQuestion/index';
+import MyAnswers from './pages/Dashboard/MyAnswers';
 
 
 // Admin Pages
 import AdminAnasayfa from './pages/admin/anasayfa'
 import AdminProfilePage from './pages/admin/profile';
 import GetAllUsers from './pages/admin/UserDelete';
+
 
 
 
@@ -104,6 +106,7 @@ function App() {
         <Route path='/dashboard/question-add' element={<PrivateRoute><QuestionAddPage></QuestionAddPage></PrivateRoute>} />
         <Route path='/dashboard/AllQuestion' element={<PrivateRoute><AllQuestionPage></AllQuestionPage></PrivateRoute>} />
         <Route path='/dashboard/myQuestions' element={<PrivateRoute><MyQuestion></MyQuestion></PrivateRoute>} />
+        <Route path='/dashboard/myAnswers' element={<PrivateRoute><MyAnswers></MyAnswers></PrivateRoute>} />
 
 
         {/* Admin Route */}
