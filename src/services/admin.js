@@ -83,3 +83,27 @@ export const toggleBlockUser = async(userId) => {
     };
 };
 
+export const announcement = async(announcementModel)=>{
+    const {title, content} = announcementModel
+    try {
+        const apiRequest = await fetch(`http://localhost:8000/v1/api/admin/announcement`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer: ${getCookie('access_token')}`,
+            },
+            body: JSON.stringify({
+                title,content
+            }),
+            credentials: "include",
+        });
+
+        const response = await apiRequest.json();
+        console.log(response)
+
+    } catch(error) {
+        console.error(error);
+        throw error;
+    };
+}
+

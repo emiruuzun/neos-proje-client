@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom'
 import { Navigate, useLocation } from 'react-router-dom';
 import { getCookie } from './utils/cookie-manager';
@@ -21,6 +22,10 @@ import MyAnswers from './pages/Dashboard/MyAnswers';
 import AdminAnasayfa from './pages/admin/anasayfa'
 import AdminProfilePage from './pages/admin/profile';
 import GetAllUsers from './pages/admin/UserDelete';
+import AnnouncementPage from './pages/admin/Announcement';
+
+// Sokcet İo
+import { io } from 'socket.io-client'
 
 
 
@@ -89,6 +94,24 @@ PublicRoute.propTypes = {
 };
 
 function App() {
+
+  useEffect(()=>{
+    const {REACT_APP_SOCKET_URL} = process.env
+    const socket = io(REACT_APP_SOCKET_URL);
+    socket.on('announcement', (announcement) => {
+      console.log('Duyuru:', announcement);
+      // İsterseniz burada state güncelleyerek bir bildirim komponentine de gönderebilirsiniz.
+    });
+  
+    // Cleanup function
+    return () => {
+      socket.off('announcement');
+    };
+
+  },[])
+
+
+
   return (
     <>
 
@@ -113,6 +136,7 @@ function App() {
         <Route path='/admin' element={<AdminRoute><AdminAnasayfa></AdminAnasayfa></AdminRoute>} />
         <Route path='/admin/profile' element={<AdminRoute><AdminProfilePage></AdminProfilePage></AdminRoute>} />
         <Route path='/admin/getallusers' element={<AdminRoute><GetAllUsers></GetAllUsers></AdminRoute>} />
+        <Route path='/admin/Announcement' element={<AdminRoute><AnnouncementPage></AnnouncementPage></AdminRoute>} />
         
         
         
