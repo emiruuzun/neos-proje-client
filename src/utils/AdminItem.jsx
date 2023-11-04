@@ -18,6 +18,11 @@ export const adminItem = [
           name: 'User Settings',
           slug: 'admin/getallusers',
           description: 'User Analysis',
+        },
+        {
+          name: 'Announcement',
+          slug: 'admin/Announcement',
+          description: 'Announcement',
         }
       ],
     }
