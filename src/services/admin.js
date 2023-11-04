@@ -99,11 +99,19 @@ export const announcement = async(announcementModel)=>{
         });
 
         const response = await apiRequest.json();
-        console.log(response)
 
-    } catch(error) {
+        if (apiRequest.ok) {
+          toast.success("Announcement added successfully!");
+        } else {
+          toast.error(`Error: ${response.message || 'Failed to add announcement.'}`);
+        }
+    
+        return response;
+    
+      } catch (error) {
         console.error(error);
+        toast.error(`Error: ${error.message || 'Failed to add announcement.'}`);
         throw error;
+      };
     };
-}
 

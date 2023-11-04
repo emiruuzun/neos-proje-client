@@ -1,5 +1,7 @@
+import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { menuItem } from '../utils/MenuItem';
+import { useNotifications } from '../context/NotificationContext';
 import { logoutUser } from '../services/auth';
 import { 
   FaUserCircle, 
@@ -8,15 +10,18 @@ import {
   FaListUl, 
   FaBox,
   FaQuestionCircle,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaBell // Bildirim ikonu
 } from "react-icons/fa";
 
-function Dashboardlayout({ children }) {
+function DashboardLayout({ children }) {
   const navigate = useNavigate();
+  const { notifications } = useNotifications();
 
   const handleLogout = async () => {
     try {
-      await logoutUser(navigate); 
+      await logoutUser();
+      navigate('/giris'); // veya logoutUser fonksiyonu içinde yönlendirme yaptığınız bir yer olabilir.
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -33,11 +38,22 @@ function Dashboardlayout({ children }) {
       case 'All Questions': 
         return <FaListUl className="mr-2" />;
       case 'My Questions': 
-      return <FaQuestionCircle className="mr-2" />;
-      default: 
+        return <FaQuestionCircle className="mr-2" />;
+        case 'Feed': // 'Feed' için özel olarak bildirim sayacı içeren ikon
+        return (
+          <div className="relative mr-2">
+            <FaBell />
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                {notifications.length}
+              </span>
+            )}
+          </div>
+        );
+      default:  
         return <FaBox className="mr-2" />;
     }
-  }
+  };
 
   return (
     <div className="flex h-screen bg-gray-900">
@@ -56,8 +72,9 @@ function Dashboardlayout({ children }) {
                       {getIcon(item.name)}
                       <NavLink
                         to={`/${item.slug}`}
-                        className="block text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 w-full"
-                        activeClassName="bg-indigo-600 text-indigo-100"
+                        className={({ isActive }) =>
+                          isActive ? "bg-indigo-600 text-indigo-100 py-2 px-4 rounded-lg w-full" : "text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 w-full"
+                        }
                       >
                         {item.name}
                       </NavLink>
@@ -76,7 +93,6 @@ function Dashboardlayout({ children }) {
           </button>
         </div>
       </div>
-      
       <div className="flex-1 bg-gray-800 m-6 p-10 rounded-xl shadow-xl">
         {children}
       </div>
@@ -84,4 +100,4 @@ function Dashboardlayout({ children }) {
   );
 }
 
-export default Dashboardlayout;
+export default DashboardLayout;

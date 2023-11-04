@@ -35,6 +35,11 @@ export const menuItem = [
           name: "My Answers",
           slug: "dashboard/myAnswers",
           description: "my Answer"
+        },
+        {
+          name: "Feed",
+          slug: "dashboard/feed",
+          description: "Feed"
         }
         
       ]
