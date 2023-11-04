@@ -116,3 +116,30 @@ export const deleteUser = async (navigate) => {
     throw new Error("API request failed");
   }
 };
+
+
+export const feed = async () => {
+  try {
+    const apiRequest = await fetch("http://localhost:8000/v1/api/auth/feed", {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer: ${getCookie('access_token')}`
+      },
+      credentials: 'include'
+    });
+
+    if (!apiRequest.ok) {
+      
+      throw new Error(`API request failed with status: ${apiRequest.status}`);
+    }
+
+    const data = await apiRequest.json();
+    return data;
+
+  } catch (error) {
+    console.error("API request failed:", error);
+    toast.error(`Feed failed: ${error.message}`);
+    throw error; 
+  }
+}
+

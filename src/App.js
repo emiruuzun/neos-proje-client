@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { getCookie } from './utils/cookie-manager';
 import { decodeToken } from './utils/decoded-token';
 import PropTypes from "prop-types";
+import { useNotifications } from './context/NotificationContext';
 
 
 // User Pages
@@ -16,6 +17,7 @@ import QuestionAddPage from './pages/Dashboard/Question/AddQuestion/index';
 import AllQuestionPage from './pages/Dashboard/Question/AllQuestion/index';
 import MyQuestion from './pages/Dashboard/Question/MyQuestion/index';
 import MyAnswers from './pages/Dashboard/MyAnswers';
+import FeedPage from './pages/Dashboard/Feed';
 
 
 // Admin Pages
@@ -26,6 +28,7 @@ import AnnouncementPage from './pages/admin/Announcement';
 
 // Sokcet İo
 import { io } from 'socket.io-client'
+
 
 
 
@@ -95,20 +98,20 @@ PublicRoute.propTypes = {
 
 function App() {
 
-  useEffect(()=>{
-    const {REACT_APP_SOCKET_URL} = process.env
+  const { setNotifications } = useNotifications();
+
+  useEffect(() => {
+    const { REACT_APP_SOCKET_URL } = process.env;
     const socket = io(REACT_APP_SOCKET_URL);
     socket.on('announcement', (announcement) => {
-      console.log('Duyuru:', announcement);
-      // İsterseniz burada state güncelleyerek bir bildirim komponentine de gönderebilirsiniz.
+      setNotifications(prev => [...prev, announcement]);
+      // Bildirimleri başka bir komponentte göstermek için state'i güncelliyoruz.
     });
-  
-    // Cleanup function
+
     return () => {
       socket.off('announcement');
     };
-
-  },[])
+  }, [setNotifications]);
 
 
 
@@ -130,6 +133,7 @@ function App() {
         <Route path='/dashboard/AllQuestion' element={<PrivateRoute><AllQuestionPage></AllQuestionPage></PrivateRoute>} />
         <Route path='/dashboard/myQuestions' element={<PrivateRoute><MyQuestion></MyQuestion></PrivateRoute>} />
         <Route path='/dashboard/myAnswers' element={<PrivateRoute><MyAnswers></MyAnswers></PrivateRoute>} />
+        <Route path='/dashboard/feed' element={<PrivateRoute><FeedPage></FeedPage></PrivateRoute>} />
 
 
         {/* Admin Route */}
