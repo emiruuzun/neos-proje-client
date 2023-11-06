@@ -20,8 +20,7 @@ function DashboardLayout({ children }) {
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
-      navigate('/giris'); // veya logoutUser fonksiyonu içinde yönlendirme yaptığınız bir yer olabilir.
+      await logoutUser(navigate);
     } catch (error) {
       console.error('Logout failed:', error);
     }
