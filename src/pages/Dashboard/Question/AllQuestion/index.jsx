@@ -71,7 +71,15 @@ function AllQuestionPage() {
   };
 
   const handleLike = async (questionId) => {
-    if (likedQuestions.includes(questionId)) return;
+    if (likedQuestions.includes(questionId)) {
+      return;
+    }
+  
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) =>
+        q._id === questionId ? { ...q, likes: [...q.likes, {}] } : q // Yeni bir beğeni ekledik
+      )
+    );
   
     try {
       await likeQuestion(questionId);
