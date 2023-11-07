@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../../../layout/DashboardLayout";
 import { allQuestion, likeQuestion } from "../../../../services/question";
 import { addAnswers } from "../../../../services/answers";
+import { useUser } from '../../../../context/UserContext';
 import {
   FaRegUser,
   FaRegQuestionCircle,
@@ -14,28 +15,41 @@ function AllQuestionPage() {
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCommentBox, setActiveCommentBox] = useState(null);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const [likedQuestions, setLikedQuestions] = useState([]);
+
+  const { user } = useUser();
+  const currentUserId = user?.id;
 
   useEffect(() => {
     const fetchQuestions = async () => {
+      setIsLoading(true);
+
       try {
         const data = await allQuestion();
         if (data && Array.isArray(data.data)) {
-          setQuestions(data.data);
+          const questionsData = data.data;
+          setQuestions(questionsData);
+
+          // Kullanıcının beğendiği soruların ID'lerini bir listeye kaydet
+          const userLikedQuestionsIds = questionsData.reduce((acc, question) => {
+            const isLikedByUser = question.likes.some(like => like._id === currentUserId);
+            return isLikedByUser ? [...acc, question._id] : acc;
+          }, []);
+
+          setLikedQuestions(userLikedQuestionsIds);
         } else {
           console.error("API did not return an array inside 'data' property");
-          setQuestions([]);
         }
       } catch (error) {
         console.error("Error fetching questions:", error);
-        setQuestions([]);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchQuestions();
-  }, []);
+  }, [currentUserId]);
 
   const addComment = async (questionId) => {
     try {
@@ -44,39 +58,29 @@ function AllQuestionPage() {
         question_id: questionId,
       });
 
-      setQuestions((prevQuestions) => {
-        return prevQuestions.map((q) => {
-          if (q._id === questionId) {
-            q.answers.push({
-              content: newAnswer.content,
-              user: {
-                email: newAnswer.user.email,
-              },
-            });
-          }
-          return q;
-        });
-      });
+      setQuestions(prevQuestions =>
+        prevQuestions.map(q =>
+          q._id === questionId ? { ...q, answers: [...q.answers, newAnswer] } : q,
+        ),
+      );
 
-      setComment(""); // Reset the comment
+      setComment('');
     } catch (error) {
-      console.error("Failed to add comment:", error);
+      console.error('Failed to add comment:', error);
     }
   };
 
   const handleLike = async (questionId) => {
-    if (likedQuestions.includes(questionId)) {
-      return;
-    }
-
+    if (likedQuestions.includes(questionId)) return;
+  
     try {
       await likeQuestion(questionId);
-      setLikedQuestions((prevLiked) => [...prevLiked, questionId]);
+
+      setLikedQuestions(prevLiked => [...prevLiked, questionId]);
     } catch (error) {
-      console.error("Beğenme işlemi başarısız:", error);
+      console.error('Like action failed:', error);
     }
   };
-
   return (
     <DashboardLayout>
       <div className="bg-gray-800 p-6 rounded-lg">
@@ -106,11 +110,11 @@ function AllQuestionPage() {
                 </span>
                 <div className="flex items-center space-x-6 mb-4">
                   <button
-                    className={`flex items-center space-x-2 text-gray-500 ${
+                    className={`flex items-center space-x-2 ${
                       likedQuestions.includes(question._id)
                         ? "text-blue-600"
-                        : "hover:text-blue-600"
-                    } transition`}
+                        : "text-gray-500 hover:text-blue-600"
+                    } transition duration-300 ease-in-out`}
                     onClick={() => handleLike(question._id)}
                   >
                     <FaThumbsUp />

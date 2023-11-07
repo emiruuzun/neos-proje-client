@@ -3,10 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import { loginUser } from '../../services/auth';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { useUser } from "../../context/UserContext"
 
 function Giris() {
   const navigate = useNavigate();
-
+  const { setUser } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -27,7 +28,8 @@ function Giris() {
     };
 
     try {
-      await loginUser(user, navigate);
+      const response = await loginUser(user,navigate);
+      setUser(response.data);
     } catch (error) {
       console.error('Login failed:', error);
     }

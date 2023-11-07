@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NotificationProvider } from "./context/NotificationContext";
+import { UserProvider } from './context/UserContext'; 
 
 ReactDOM.render(
   <BrowserRouter>
@@ -21,9 +22,11 @@ ReactDOM.render(
       pauseOnHover
       theme="dark"
     />
-    <NotificationProvider>
-      <App />
-    </NotificationProvider>
+    <UserProvider> 
+      <NotificationProvider>
+        <App />
+      </NotificationProvider>
+    </UserProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );

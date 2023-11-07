@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from "../../../layout/DashboardLayout";
-import { FaTrash } from "react-icons/fa";
+// import { FaTrash } from "react-icons/fa";
 import { feed } from '../../../services/auth';
 import { useNotifications } from '../../../context/NotificationContext';
 import { io } from 'socket.io-client';
@@ -58,9 +58,9 @@ function FeedPage() {
               <span className="text-gray-400 text-sm block mb-4">
                 Oluşturma Tarihi: {new Date(announcement.createdAt).toLocaleDateString()}
               </span>
-              <button  className="text-red-500 hover:text-red-700 mt-2">
+              {/* <button  className="text-red-500 hover:text-red-700 mt-2">
                 <FaTrash className="inline" /> Sil
-              </button>
+              </button> */}
             </div>
           ))}
         </div>
