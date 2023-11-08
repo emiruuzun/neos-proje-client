@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../../../layout/DashboardLayout";
 import { allQuestion, likeQuestion } from "../../../../services/question";
 import { addAnswers } from "../../../../services/answers";
-import { useUser } from '../../../../context/UserContext';
+import { useUser } from "../../../../context/UserContext";
 import {
   FaRegUser,
   FaRegQuestionCircle,
@@ -10,13 +10,18 @@ import {
   FaThumbsDown,
   FaCommentDots,
 } from "react-icons/fa";
+import * as Dialog from "@radix-ui/react-dialog";
 
 function AllQuestionPage() {
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCommentBox, setActiveCommentBox] = useState(null);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [likedQuestions, setLikedQuestions] = useState([]);
+  const [showLikesModal, setShowLikesModal] = useState(false);
+  const [likers, setLikers] = useState([]);
+  const [selectedQuestionTitle, setSelectedQuestionTitle] = useState("");
+
 
   const { user } = useUser();
   const currentUserId = user?.id;
@@ -31,11 +36,15 @@ function AllQuestionPage() {
           const questionsData = data.data;
           setQuestions(questionsData);
 
-          // Kullanıcının beğendiği soruların ID'lerini bir listeye kaydet
-          const userLikedQuestionsIds = questionsData.reduce((acc, question) => {
-            const isLikedByUser = question.likes.some(like => like._id === currentUserId);
-            return isLikedByUser ? [...acc, question._id] : acc;
-          }, []);
+          const userLikedQuestionsIds = questionsData.reduce(
+            (acc, question) => {
+              const isLikedByUser = question.likes.some(
+                (like) => like._id === currentUserId
+              );
+              return isLikedByUser ? [...acc, question._id] : acc;
+            },
+            []
+          );
 
           setLikedQuestions(userLikedQuestionsIds);
         } else {
@@ -58,35 +67,47 @@ function AllQuestionPage() {
         question_id: questionId,
       });
 
-      setQuestions(prevQuestions =>
-        prevQuestions.map(q =>
-          q._id === questionId ? { ...q, answers: [...q.answers, newAnswer] } : q,
-        ),
+      setQuestions((prevQuestions) =>
+        prevQuestions.map((q) =>
+          q._id === questionId
+            ? { ...q, answers: [...q.answers, newAnswer] }
+            : q
+        )
       );
 
-      setComment('');
+      setComment("");
     } catch (error) {
-      console.error('Failed to add comment:', error);
+      console.error("Failed to add comment:", error);
     }
   };
+
+  const openLikesModal = (questionId) => {
+    const question = questions.find((q) => q._id === questionId);
+    setLikers(
+      question.likes.map((like) => like.email || "Bilinmeyen kullanıcı")
+    );
+    setSelectedQuestionTitle(question.title); // Burada başlığı ayarlıyoruz
+    setShowLikesModal(true);
+  };
+  
 
   const handleLike = async (questionId) => {
     if (likedQuestions.includes(questionId)) {
       return;
     }
-  
+
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
-        q._id === questionId ? { ...q, likes: [...q.likes, {}] } : q // Yeni bir beğeni ekledik
+        q._id === questionId ? { ...q, likes: [...q.likes, {}] } : q
       )
     );
-  
+
     try {
       await likeQuestion(questionId);
 
-      setLikedQuestions(prevLiked => [...prevLiked, questionId]);
+      setLikedQuestions((prevLiked) => [...prevLiked, questionId]);
     } catch (error) {
-      console.error('Like action failed:', error);
+      console.error("Like action failed:", error);
     }
   };
   return (
@@ -128,7 +149,12 @@ function AllQuestionPage() {
                     <FaThumbsUp />
                     <span>Beğen</span>
                     <span className="ml-2 text-sm text-gray-400">
-                      {question.likes.length}
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => openLikesModal(question._id)}
+                      >
+                        {question.likes.length}
+                      </span>
                     </span>
                   </button>
 
@@ -185,6 +211,28 @@ function AllQuestionPage() {
           </div>
         )}
       </div>
+      <Dialog.Root open={showLikesModal} onOpenChange={setShowLikesModal}>
+        <Dialog.Overlay className="fixed inset-0 bg-black/60" />
+        <Dialog.Content className="fixed bg-gray-800 p-6 rounded-md top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-auto">
+          <Dialog.Title className="text-lg font-bold text-white mb-4">
+            Beğenen Kullanıcılar
+          </Dialog.Title>
+          <Dialog.Description className="text-gray-300 mb-6">
+            {selectedQuestionTitle &&
+              `Soru ID: ${selectedQuestionTitle} olan soruyu beğenen kullanıcıların listesi:`}
+          </Dialog.Description>
+          <ul className="list-disc pl-5 mb-6">
+            {likers.map((email, index) => (
+              <li key={index} className="text-gray-200 mb-1">
+                {email}
+              </li>
+            ))}
+          </ul>
+          <Dialog.Close className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500">
+            Kapat
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Root>
     </DashboardLayout>
   );
 }
