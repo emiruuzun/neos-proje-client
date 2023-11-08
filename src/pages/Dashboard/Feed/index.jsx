@@ -56,7 +56,7 @@ function FeedPage() {
               </h3>
               <p className="text-gray-200 mb-4">{announcement.content}</p>
               <span className="text-gray-400 text-sm block mb-4">
-                Oluşturma Tarihi: {new Date(announcement.createdAt).toLocaleDateString()}
+                Oluşturma Tarihi: {new Date(announcement.date).toLocaleDateString()}
               </span>
               {/* <button  className="text-red-500 hover:text-red-700 mt-2">
                 <FaTrash className="inline" /> Sil
