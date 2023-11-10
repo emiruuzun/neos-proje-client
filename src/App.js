@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom'
 import { Navigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { getCookie } from './utils/cookie-manager';
 import { decodeToken } from './utils/decoded-token';
 import PropTypes from "prop-types";
@@ -113,7 +114,32 @@ function App() {
     };
   }, [setNotifications]);
 
-
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const parsedUser = storedUser && JSON.parse(storedUser);
+    const userId = parsedUser ? parsedUser.id : null;
+  
+    if (userId) {
+      const { REACT_APP_SOCKET_URL } = process.env;
+      const socket = io(REACT_APP_SOCKET_URL, {
+        query: { userId: userId },
+      });
+    
+      socket.on('likeNotification', (data) => {
+        // console.log('Bir soru beğenildi:', data);
+        toast.success(data.likedBy)
+       
+      });
+    
+     
+      return () => {
+        socket.off('likeNotification');
+        socket.disconnect();
+      };
+    }
+  }, []);
+  
+  
 
   return (
     <>
