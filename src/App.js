@@ -100,6 +100,7 @@ PublicRoute.propTypes = {
 function App() {
 
   const { setNotifications } = useNotifications();
+  const { setLikeNotifications } = useNotifications();
 
   useEffect(() => {
     const { REACT_APP_SOCKET_URL } = process.env;
@@ -124,20 +125,19 @@ function App() {
       const socket = io(REACT_APP_SOCKET_URL, {
         query: { userId: userId },
       });
-    
       socket.on('likeNotification', (data) => {
-        // console.log('Bir soru beğenildi:', data);
-        toast.success(data.likedBy)
+        console.log("appJs Data",data)
+        setLikeNotifications(prev =>[...prev, data])
+        toast.info(`Beğenen: ${data.likedBy} soru: ${data.questionId} `)
        
       });
     
      
       return () => {
         socket.off('likeNotification');
-        socket.disconnect();
       };
     }
-  }, []);
+  }, [setLikeNotifications]);
   
   
 

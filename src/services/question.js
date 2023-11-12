@@ -96,17 +96,36 @@ export const deleteQuestion = async (id) => {
 
 export const likeQuestion = async (id) => {
   try {
-
-    const apiRequest = await fetch(`http://localhost:8000/v1/api/questions/${id}/like`,{
-      method: "GET",
-      headers:{
-        Authorization: `Bearer: ${getCookie("access_token")}`,
+    const apiRequest = await fetch(
+      `http://localhost:8000/v1/api/questions/${id}/like`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer: ${getCookie("access_token")}`,
+        },
       }
-    });
+    );
     const data = apiRequest.json();
-    console.log(data)
     return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+export const getMyLikes = async () => {
+  try {
+    const apiRequest = await fetch(
+      "http://localhost:8000/v1/api/questions/myLikes",{
+        method:"GET",
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer: ${getCookie("access_token")}`,
+        },
+        // body:JSON.stringify({likeUser:id})
+      }
+    );
+    const  data = await apiRequest.json();
+    return data
   } catch (error) {
     console.log(error);
   }
