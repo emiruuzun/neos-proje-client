@@ -6,9 +6,10 @@ export const useNotifications = () => useContext(NotificationContext);
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
+  const [likeNotifications, setLikeNotifications] = useState([]);
 
   return (
-    <NotificationContext.Provider value={{ notifications, setNotifications }}>
+    <NotificationContext.Provider value={{ notifications, setNotifications ,likeNotifications,setLikeNotifications}}>
       {children}
     </NotificationContext.Provider>
   );
