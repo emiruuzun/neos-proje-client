@@ -74,6 +74,7 @@ export const logoutUser = async (navigate) => {
     const data = await apiRequest.json();
     if (data.success) {
       deleteCookie("access_token");
+      localStorage.removeItem("user")
       toast.success('Logout successful', { autoClose: 2000 });
       setTimeout(() => {
         navigate('/giris');
@@ -102,6 +103,7 @@ export const deleteUser = async (navigate) => {
 
     const data = await apiRequest.json();
     if (data.success) {
+      localStorage.removeItem("user")
       toast.success('Delete Acount successful', { autoClose: 2000 });
       setTimeout(() => {
         navigate('/giris');

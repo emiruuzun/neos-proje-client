@@ -6,7 +6,7 @@ import { getCookie } from './utils/cookie-manager';
 import { decodeToken } from './utils/decoded-token';
 import PropTypes from "prop-types";
 import { useNotifications } from './context/NotificationContext';
-
+import { useUser } from './context/UserContext';
 
 // User Pages
 import Anasayfa from './pages/Anasayfa';
@@ -29,6 +29,7 @@ import AnnouncementPage from './pages/admin/Announcement';
 
 // Sokcet İo
 import { io } from 'socket.io-client'
+
 
 
 
@@ -101,6 +102,7 @@ function App() {
 
   const { setNotifications } = useNotifications();
   const { setLikeNotifications } = useNotifications();
+  const { user } = useUser();
 
   useEffect(() => {
     const { REACT_APP_SOCKET_URL } = process.env;
@@ -116,28 +118,34 @@ function App() {
   }, [setNotifications]);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const parsedUser = storedUser && JSON.parse(storedUser);
-    const userId = parsedUser ? parsedUser.id : null;
-  
+    let userId;
+
+    if (user) {
+      userId = user.id; // Eğer user state doluysa, bu ID'yi kullan
+    } else {
+      // Eğer user state boşsa, localStorage'dan kontrol et
+      const storedUser = localStorage.getItem('user');
+      const parsedUser = storedUser && JSON.parse(storedUser);
+      userId = parsedUser ? parsedUser.id : null;
+    }
+
     if (userId) {
       const { REACT_APP_SOCKET_URL } = process.env;
       const socket = io(REACT_APP_SOCKET_URL, {
         query: { userId: userId },
       });
+
       socket.on('likeNotification', (data) => {
-        console.log("appJs Data",data)
-        setLikeNotifications(prev =>[...prev, data])
-        toast.info(`Beğenen: ${data.likedBy} soru: ${data.questionId} `)
-       
+        console.log("appJs Data", data);
+        setLikeNotifications(prev => [...prev, data]);
+        toast.info(`Beğenen: ${data.likedBy} soru: ${data.questionTitle}`);
       });
-    
-     
+
       return () => {
         socket.off('likeNotification');
       };
     }
-  }, [setLikeNotifications]);
+  }, [user, setLikeNotifications]); //
   
   
 

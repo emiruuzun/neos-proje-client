@@ -21,17 +21,9 @@ export const UserProvider = ({ children }) => {
     }, [user]);
 
     // setUser fonksiyonunu override ederek her değişiklikte local storage'ı da güncelle
-    const handleSetUser = (newUser) => {
-        setUser(newUser);
-        if (newUser) {
-            localStorage.setItem('user', JSON.stringify(newUser));
-        } else {
-            localStorage.removeItem('user');
-        }
-    };
 
     return (
-        <UserContext.Provider value={{ user, setUser: handleSetUser }}>
+        <UserContext.Provider value={{ user, setUser }}>
             {children}
         </UserContext.Provider>
     );
