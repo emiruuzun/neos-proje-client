@@ -9,7 +9,7 @@ import { io } from "socket.io-client";
 function FeedPage() {
   const [announcements, setAnnouncements] = useState([]);
   const [likes, setLikes] = useState([]);
-  const { likeNotifications,setNotifications } = useNotifications();
+  const { setNotifications, likeNotifications, setLikeNotifications } = useNotifications();
   useEffect(() => {
     const fetchFeed = async () => {
       try {
@@ -31,13 +31,14 @@ function FeedPage() {
       try {
         const feedData = await getMyLikes();
         setLikes(feedData.data);
+        setLikeNotifications([])
       } catch (error) {
         console.error("Failed to fetch likes:", error);
       }
     };
 
     fetchLikes();
-  }, [likeNotifications]); 
+  }, [likeNotifications,setLikeNotifications]); 
 
   useEffect(() => {
     const socket = io(process.env.REACT_APP_SOCKET_URL);

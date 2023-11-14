@@ -84,7 +84,7 @@ function AllQuestionPage() {
   const openLikesModal = (questionId) => {
     const question = questions.find((q) => q._id === questionId);
     setLikers(
-      question.likes.map((like) => like.email || "Bilinmeyen kullanıcı")
+      question.likes.map((like) => like?.email || "Bilinmeyen kullanıcı")
     );
     setSelectedQuestionTitle(question.title); // Burada başlığı ayarlıyoruz
     setShowLikesModal(true);
@@ -135,7 +135,7 @@ function AllQuestionPage() {
                   <p className="text-gray-200">{question.content}</p>
                 </div>
                 <span className="text-gray-400 text-sm block mb-4">
-                  Ekleyen: {question.user.email}
+                  Ekleyen: {question?.user?.email || "Bilinmeyen kullanıcı"}
                 </span>
                 <div className="flex items-center space-x-6 mb-4">
                   <button
@@ -196,7 +196,7 @@ function AllQuestionPage() {
                         <FaRegUser className="text-gray-500" />
                         <div>
                           <p className="text-gray-400 text-sm">
-                            Cevaplayan: {answer.user.email}
+                            Cevaplayan: {answer?.user?.email || "Bilinmeyen kullanıcı"}
                           </p>
                           <p className="text-gray-200">{answer.content}</p>
                         </div>
