@@ -16,7 +16,7 @@ import {
 
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
-  const { notifications } = useNotifications();
+  const { notifications,likeNotifications } = useNotifications();
 
   const handleLogout = async () => {
     try {
@@ -42,9 +42,9 @@ function DashboardLayout({ children }) {
         return (
           <div className="relative mr-2">
             <FaBell />
-            {notifications.length > 0 && (
+            {(notifications.length + likeNotifications.length) > 0 && (
               <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                {notifications.length}
+                {(notifications.length + likeNotifications.length)}
               </span>
             )}
           </div>
