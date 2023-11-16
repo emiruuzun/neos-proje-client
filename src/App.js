@@ -121,9 +121,9 @@ function App() {
     let userId;
 
     if (user) {
-      userId = user.id; // Eğer user state doluysa, bu ID'yi kullan
+      userId = user.id; 
     } else {
-      // Eğer user state boşsa, localStorage'dan kontrol et
+     
       const storedUser = localStorage.getItem('user');
       const parsedUser = storedUser && JSON.parse(storedUser);
       userId = parsedUser ? parsedUser.id : null;
