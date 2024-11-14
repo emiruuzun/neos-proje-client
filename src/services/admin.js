@@ -101,7 +101,7 @@ export const announcement = async (announcementModel) => {
         } else {
             toast.error(`Error: ${response.message || 'Failed to add announcement.'}`);
         }
-
+        console.log(response)
         return response;
 
     } catch (error) {
