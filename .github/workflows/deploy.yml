@@ -42,11 +42,13 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: ${{ secrets.SERVER_PORT }}
         script: |
+          cd /home/ubuntu/myTestProject
           sudo docker compose down
-          sudo docker rm -f $(sudo docker ps -a -q --filter "name=nginx") || true
-          sudo docker rm -f $(sudo docker ps -a -q --filter "name=frontend") || true
-          sudo docker rm -f $(sudo docker ps -a -q --filter "name=backend") || true
-          sudo docker rm -f $(sudo docker ps -aq) || true
-          sudo docker rmi $(sudo docker images -q) || true
+          sudo docker ps -a -q --filter "name=nginx" | grep . && sudo docker rm -f $(sudo docker ps -a -q --filter "name=nginx") || true
+          sudo docker ps -a -q --filter "name=frontend" | grep . && sudo docker rm -f $(sudo docker ps -a -q --filter "name=frontend") || true
+          sudo docker ps -a -q --filter "name=backend" | grep . && sudo docker rm -f $(sudo docker ps -a -q --filter "name=backend") || true
+          sudo docker ps -aq | grep . && sudo docker rm -f $(sudo docker ps -aq) || true
+          sudo docker images -q | grep . && sudo docker rmi $(sudo docker images -q) || true
           sudo docker compose up -d --build
+
 
