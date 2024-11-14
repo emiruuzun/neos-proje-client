@@ -1,9 +1,11 @@
 import { toast } from 'react-toastify';
-import { setCookie, deleteCookie, getCookie} from '../utils/cookie-manager'
+import { setCookie, deleteCookie, getCookie } from '../utils/cookie-manager';
+
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const registerUser = async (user, navigate) => {
   try {
-    const apiRequest = await fetch("http://localhost:8000/v1/api/auth/register", {
+    const apiRequest = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user)
@@ -26,13 +28,11 @@ export const registerUser = async (user, navigate) => {
   }
 };
 
-
-
 export const loginUser = async (user, navigate) => {
   const { name, email, password } = user;
 
   try {
-    const apiRequest = await fetch("http://localhost:8000/v1/api/auth/login", {
+    const apiRequest = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
@@ -40,9 +40,7 @@ export const loginUser = async (user, navigate) => {
 
     const data = await apiRequest.json();
     if (data.success) {
-
       const access_token = data.access_token;
-  
       setCookie("access_token", access_token, 1);
 
       toast.success('Login successful', { autoClose: 2000 });
@@ -63,10 +61,10 @@ export const loginUser = async (user, navigate) => {
 
 export const logoutUser = async (navigate) => {
   try {
-    const apiRequest = await fetch("http://localhost:8000/v1/api/auth/logout", {
+    const apiRequest = await fetch(`${BASE_URL}/auth/logout`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer: ${getCookie('access_token')}`
+        Authorization: `Bearer ${getCookie('access_token')}`
       },
       credentials: 'include'
     });
@@ -74,7 +72,7 @@ export const logoutUser = async (navigate) => {
     const data = await apiRequest.json();
     if (data.success) {
       deleteCookie("access_token");
-      localStorage.removeItem("user")
+      localStorage.removeItem("user");
       toast.success('Logout successful', { autoClose: 2000 });
       setTimeout(() => {
         navigate('/giris');
@@ -90,10 +88,9 @@ export const logoutUser = async (navigate) => {
   }
 };
 
-
 export const deleteUser = async (navigate) => {
   try {
-    const apiRequest = await fetch("http://localhost:8000/v1/api/auth/delete", {
+    const apiRequest = await fetch(`${BASE_URL}/auth/delete`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer: ${getCookie('access_token')}`
@@ -103,8 +100,8 @@ export const deleteUser = async (navigate) => {
 
     const data = await apiRequest.json();
     if (data.success) {
-      localStorage.removeItem("user")
-      toast.success('Delete Acount successful', { autoClose: 2000 });
+      localStorage.removeItem("user");
+      toast.success('Delete Account successful', { autoClose: 2000 });
       setTimeout(() => {
         navigate('/giris');
       }, 2000);
@@ -119,10 +116,9 @@ export const deleteUser = async (navigate) => {
   }
 };
 
-
 export const feed = async () => {
   try {
-    const apiRequest = await fetch("http://localhost:8000/v1/api/auth/feed", {
+    const apiRequest = await fetch(`${BASE_URL}/auth/feed`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer: ${getCookie('access_token')}`
@@ -131,7 +127,6 @@ export const feed = async () => {
     });
 
     if (!apiRequest.ok) {
-      
       throw new Error(`API request failed with status: ${apiRequest.status}`);
     }
 
@@ -143,5 +138,4 @@ export const feed = async () => {
     toast.error(`Feed failed: ${error.message}`);
     throw error; 
   }
-}
-
+};

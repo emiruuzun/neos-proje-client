@@ -1,13 +1,11 @@
 import { toast } from 'react-toastify';
 import { getCookie } from "../utils/cookie-manager";
 
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-
-
-
-export const getAllUsers = async() => {
+export const getAllUsers = async () => {
     try {
-        const apiRequest = await fetch("http://localhost:8000/v1/api/admin/alluser", {
+        const apiRequest = await fetch(`${BASE_URL}/admin/alluser`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer: ${getCookie('access_token')}`,
@@ -29,11 +27,10 @@ export const getAllUsers = async() => {
     }
 };
 
-
-export const deleteUserAdmin = async(userId) => {
-    try{
-        const apiRequest = await fetch(`http://localhost:8000/v1/api/admin/deleteUserAdmin/${userId}`,{
-            method:"GET",
+export const deleteUserAdmin = async (userId) => {
+    try {
+        const apiRequest = await fetch(`${BASE_URL}/admin/deleteUserAdmin/${userId}`, {
+            method: "GET",
             headers: {
                 Authorization: `Bearer: ${getCookie('access_token')}`,
             },
@@ -47,16 +44,15 @@ export const deleteUserAdmin = async(userId) => {
 
         toast.success("Kullanıcı başarıyla silindi!");
         return response;
-    }catch(error){
+    } catch (error) {
         console.log(error);
         throw error;
-    };
+    }
 };
 
-
-export const toggleBlockUser = async(userId) => {
+export const toggleBlockUser = async (userId) => {
     try {
-        const apiRequest = await fetch(`http://localhost:8000/v1/api/admin/blokUser/${userId}`, {
+        const apiRequest = await fetch(`${BASE_URL}/admin/blokUser/${userId}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer: ${getCookie('access_token')}`,
@@ -77,23 +73,23 @@ export const toggleBlockUser = async(userId) => {
         }
 
         return response;
-    } catch(error) {
+    } catch (error) {
         console.error(error);
         throw error;
-    };
+    }
 };
 
-export const announcement = async(announcementModel)=>{
-    const {title, content} = announcementModel
+export const announcement = async (announcementModel) => {
+    const { title, content } = announcementModel;
     try {
-        const apiRequest = await fetch(`http://localhost:8000/v1/api/admin/announcement`, {
+        const apiRequest = await fetch(`${BASE_URL}/admin/announcement`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer: ${getCookie('access_token')}`,
             },
             body: JSON.stringify({
-                title,content
+                title, content
             }),
             credentials: "include",
         });
@@ -101,17 +97,16 @@ export const announcement = async(announcementModel)=>{
         const response = await apiRequest.json();
 
         if (apiRequest.ok) {
-          toast.success("Announcement added successfully!");
+            toast.success("Announcement added successfully!");
         } else {
-          toast.error(`Error: ${response.message || 'Failed to add announcement.'}`);
+            toast.error(`Error: ${response.message || 'Failed to add announcement.'}`);
         }
-    
+
         return response;
-    
-      } catch (error) {
+
+    } catch (error) {
         console.error(error);
         toast.error(`Error: ${error.message || 'Failed to add announcement.'}`);
         throw error;
-      };
-    };
-
+    }
+};
