@@ -11,12 +11,12 @@ import {
   FaBox,
   FaQuestionCircle,
   FaSignOutAlt,
-  FaBell // Bildirim ikonu
+  FaBell 
 } from "react-icons/fa";
 
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
-  const { notifications,likeNotifications } = useNotifications();
+  const { notifications, likeNotifications } = useNotifications();
 
   const handleLogout = async () => {
     try {
@@ -38,7 +38,7 @@ function DashboardLayout({ children }) {
         return <FaListUl className="mr-2" />;
       case 'My Questions': 
         return <FaQuestionCircle className="mr-2" />;
-        case 'Feed': // 'Feed' için özel olarak bildirim sayacı içeren ikon
+      case 'Feed':
         return (
           <div className="relative mr-2">
             <FaBell />
@@ -55,8 +55,8 @@ function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900">
-      <div className="w-80 bg-gray-900 text-white shadow-lg">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-900">
+      <div className="md:w-80 bg-gray-900 text-white shadow-lg">
         <div className="p-6">
           <h1 className="text-3xl font-extrabold mb-8 border-b border-gray-700 pb-4 text-indigo-500">Dashboard</h1>
           <ul className="space-y-6">
@@ -72,7 +72,7 @@ function DashboardLayout({ children }) {
                       <NavLink
                         to={`/${item.slug}`}
                         className={({ isActive }) =>
-                          isActive ? "bg-indigo-600 text-indigo-100 py-2 px-4 rounded-lg w-full" : "text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 w-full"
+                          isActive ? "bg-indigo-600 text-indigo-100 py-2 px-4 rounded-lg flex-1" : "text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 flex-1"
                         }
                       >
                         {item.name}
