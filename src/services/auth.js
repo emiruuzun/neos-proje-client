@@ -46,7 +46,7 @@ export const loginUser = async (user, navigate) => {
       toast.success('Login successful', { autoClose: 2000 });
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1000);
+      }, 2000);
     } else {
       toast.error(data.message);
     }
