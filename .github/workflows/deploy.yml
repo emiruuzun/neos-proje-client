@@ -72,21 +72,39 @@ jobs:
       with:
         node-version: 18
 
-    - name: Build frontend Docker image
-      run: |
-        docker build \
-          --build-arg REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }} \
-          -t emiruuzun/test-project-frontend:latest .
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    - name: Log in to Docker Hub
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Push frontend Docker image to Docker Hub
+    - name: Build and push frontend Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: emiruuzun/test-project-frontend:latest
+        build-args: |
+          REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+    # Önbellek optimizasyonu
+    - name: Move cache
       run: |
-        docker push emiruuzun/test-project-frontend:latest
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: SSH into server and deploy
       uses: appleboy/ssh-action@v0.1.7
@@ -96,19 +114,32 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: ${{ secrets.SERVER_PORT }}
         script: |
+          # Proje dizinine git
           cd /home/ubuntu/myTestProject
+          
+          # Mevcut servisleri durdur
           sudo docker compose down
           
-          # Nginx, frontend ve backend konteynerlerini güvenli bir şekilde kaldır
-          sudo docker rm -f $(sudo docker ps -a -q --filter "name=nginx") || true
-          sudo docker rm -f $(sudo docker ps -a -q --filter "name=frontend") || true
-          sudo docker rm -f $(sudo docker ps -a -q --filter "name=backend") || true
+          # Kullanılmayan container'ları temizle
+          sudo docker container prune -f
           
-          # Tüm konteynerleri güvenli bir şekilde kaldır
-          sudo docker rm -f $(sudo docker ps -aq) || true
+          # Kullanılmayan imajları temizle
+          sudo docker image prune -af
           
-          # Tüm imajları güvenli bir şekilde kaldır
-          sudo docker rmi $(sudo docker images -q) || true
+          # En son imajları çek
+          sudo docker pull emiruuzun/test-project-frontend:latest
           
-          # Tüm servisleri yeniden başlat
+          # Docker compose ile servisleri yeniden başlat
           sudo docker compose up -d --build
+          
+          # Hata kontrolü
+          if [ $? -eq 0 ]; then
+            echo "Deployment successful!"
+          else
+            echo "Deployment failed!"
+            exit 1
+          fi
+          
+          # Sistem durumunu kontrol et
+          sudo docker ps
+          sudo docker compose logs --tail=50
