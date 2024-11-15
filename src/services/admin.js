@@ -92,7 +92,6 @@ export const announcement = async (announcementModel) => {
                 title, content
             }),
             credentials: "include",
-            //
         });
 
         const response = await apiRequest.json();
